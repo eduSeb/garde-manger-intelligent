@@ -1,0 +1,1 @@
+# 🥗 Garde-Manger Intelligent v2\n\nApplication de gestion de stock alimentaire anti-gaspillage avec IA.\n\n## Fonctionnalités\n- Glassmorphism design\n- Gestion Frigo / Placard / Congélateur\n- Scan code-barres (OpenFoodFacts) + OCR DLC (Gemini)\n- Recettes anti-gaspillage\n- Liste de courses automatique\n\n## Déploiement\nApplication disponible sur GitHub Pages.\n
