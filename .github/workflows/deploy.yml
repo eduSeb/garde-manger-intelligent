@@ -9,6 +9,7 @@ permissions:
   contents: read
   pages: write
   id-token: write
+  issues: write
 
 concurrency:
   group: pages
@@ -27,12 +28,23 @@ jobs:
           node-version: 20
 
       - name: Install dependencies
-        run: npm install
+        run: |
+          npm install --legacy-peer-deps > install.log 2>&1 || {
+            gh issue create --title "Install Failed" --body "$(cat install.log)" --repo eduSeb/garde-manger-intelligent
+            exit 1
+          }
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-        run: npm run build
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          npm run build > build.log 2>&1 || {
+            gh issue create --title "Build Failed" --body "$(cat build.log)" --repo eduSeb/garde-manger-intelligent
+            exit 1
+          }
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
