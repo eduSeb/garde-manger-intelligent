@@ -150,9 +150,16 @@ export default function App() {
     }
 
     if (barcodeToUse) {
-      const offResult = await fetchProductByBarcode(barcodeToUse);
-      if (offResult.found) {
-        partial = { ...partial, ...offResultToFoodItem(offResult, barcodeToUse) };
+      // Nettoyage : ne garder que les chiffres
+      barcodeToUse = barcodeToUse.replace(/\\D/g, '');
+      
+      if (barcodeToUse.length > 0) {
+        partial.barcode = barcodeToUse; // Toujours conserver le code-barres lu !
+        
+        const offResult = await fetchProductByBarcode(barcodeToUse);
+        if (offResult.found) {
+          partial = { ...partial, ...offResultToFoodItem(offResult, barcodeToUse) };
+        }
       }
     }
 
@@ -181,7 +188,7 @@ export default function App() {
   const handleDelete = async (id: string) => {
     if (!window.confirm('Supprimer ce produit ?')) return;
     try { await deleteDoc(doc(db, 'items', id)); }
-    catch (e) { handleFirestoreError(e, OperationType.DELETE, `items/${id}`); }
+    catch (e) { handleFirestoreError(e, OperationType.DELETE, \`items/\${id}\`); }
   };
 
   const handleConsume = (item: FoodItem) => setConsumeTarget(item);
@@ -191,7 +198,7 @@ export default function App() {
     try {
       await deleteDoc(doc(db, 'items', consumeTarget.id!));
       if (addToList) await addConsumedItemToShoppingList(consumeTarget, user.uid);
-    } catch (e) { handleFirestoreError(e, OperationType.DELETE, `items/${consumeTarget.id}`); }
+    } catch (e) { handleFirestoreError(e, OperationType.DELETE, \`items/\${consumeTarget.id}\`); }
     setConsumeTarget(null);
   };
 
@@ -206,7 +213,7 @@ export default function App() {
         frozenAt: new Date().toISOString(),
         expiryDate: newExpiry,
       });
-    } catch (e) { handleFirestoreError(e, OperationType.UPDATE, `items/${item.id}`); }
+    } catch (e) { handleFirestoreError(e, OperationType.UPDATE, \`items/\${item.id}\`); }
   };
 
   const handleSuggestRecipes = async (filters?: RecipeFilters) => {
@@ -268,7 +275,7 @@ export default function App() {
             <button
               key={tab}
               onClick={() => tab === 'recipes' ? handleSuggestRecipes() : setActiveTab(tab)}
-              className={`px-4 py-1.5 rounded-lg text-xs font-semibold uppercase tracking-widest transition-all \${activeTab === tab ? 'bg-white/10 text-white' : 'text-[var(--color-text-muted)] hover:text-white'}`}
+              className={\`px-4 py-1.5 rounded-lg text-xs font-semibold uppercase tracking-widest transition-all \${activeTab === tab ? 'bg-white/10 text-white' : 'text-[var(--color-text-muted)] hover:text-white'}\`}
             >
               {tab === 'stock' ? 'Inventaire' : tab === 'recipes' ? 'Recettes' : (
                 <span className="flex items-center gap-1.5">
