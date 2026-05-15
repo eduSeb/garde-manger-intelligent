@@ -1,0 +1,447 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+@import "tailwindcss";
+
+/* ───────────────────────────────────────────────────────────────────────────
+   DESIGN TOKENS — Garde-Manger Intelligent v2 (Glassmorphism)
+─────────────────────────────────────────────────────────────────────────── */
+@theme {
+  /* Palette de base */
+  --color-brand-bg:       #0d1117;
+  --color-brand-surface:  #161b22;
+  --color-brand-border:   rgba(255, 255, 255, 0.08);
+
+  /* Accents vibrants */
+  --color-accent-green:   #4ade80;
+  --color-accent-emerald: #10b981;
+  --color-accent-amber:   #fbbf24;
+  --color-accent-red:     #f87171;
+  --color-accent-blue:    #60a5fa;
+  --color-accent-purple:  #a78bfa;
+
+  /* Texte */
+  --color-text-primary:   #f0f6fc;
+  --color-text-secondary: rgba(240, 246, 252, 0.6);
+  --color-text-muted:     rgba(240, 246, 252, 0.35);
+
+  /* Typographie */
+  --font-display: 'Inter', ui-sans-serif, system-ui;
+
+  /* Radius */
+  --radius-glass: 20px;
+  --radius-pill:  999px;
+}
+
+/* ───────────────────────────────────────────────────────────────────────────
+   RESET & BASE
+─────────────────────────────────────────────────────────────────────────── */
+@layer base {
+  *, *::before, *::after {
+    box-sizing: border-box;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    background-color: var(--color-brand-bg);
+    color: var(--color-text-primary);
+    font-family: var(--font-display);
+    min-height: 100dvh;
+    overflow-x: hidden;
+  }
+
+  h1, h2, h3, h4 {
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+  }
+
+  ::selection {
+    background: rgba(74, 222, 128, 0.3);
+    color: #fff;
+  }
+
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb {
+    background: rgba(255,255,255,0.1);
+    border-radius: 99px;
+  }
+}
+
+/* ───────────────────────────────────────────────────────────────────────────
+   ANIMATED MESH GRADIENT BACKGROUND
+─────────────────────────────────────────────────────────────────────────── */
+.mesh-bg {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background: var(--color-brand-bg);
+  overflow: hidden;
+}
+
+.mesh-bg::before {
+  content: '';
+  position: absolute;
+  width: 70vw;
+  height: 70vw;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(16, 185, 129, 0.18) 0%, transparent 65%);
+  top: -20%;
+  left: -15%;
+  animation: meshFloat1 18s ease-in-out infinite;
+}
+
+.mesh-bg::after {
+  content: '';
+  position: absolute;
+  width: 55vw;
+  height: 55vw;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(167, 139, 250, 0.12) 0%, transparent 65%);
+  bottom: -15%;
+  right: -10%;
+  animation: meshFloat2 22s ease-in-out infinite;
+}
+
+.mesh-blob-amber {
+  position: absolute;
+  width: 40vw;
+  height: 40vw;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(251, 191, 36, 0.08) 0%, transparent 65%);
+  top: 40%;
+  left: 50%;
+  transform: translateX(-50%);
+  animation: meshFloat3 15s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes meshFloat1 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33%       { transform: translate(8vw, 5vh) scale(1.08); }
+  66%       { transform: translate(-5vw, 10vh) scale(0.95); }
+}
+
+@keyframes meshFloat2 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  40%       { transform: translate(-10vw, -8vh) scale(1.1); }
+  70%       { transform: translate(5vw, 5vh) scale(0.92); }
+}
+
+@keyframes meshFloat3 {
+  0%, 100% { transform: translateX(-50%) scale(1); }
+  50%       { transform: translateX(-50%) scale(1.15) translateY(-5vh); }
+}
+
+/* ───────────────────────────────────────────────────────────────────────────
+   GLASS COMPONENTS
+─────────────────────────────────────────────────────────────────────────── */
+
+/* Carte glass standard */
+.glass-card {
+  background: rgba(22, 27, 34, 0.65);
+  backdrop-filter: blur(20px) saturate(1.4);
+  -webkit-backdrop-filter: blur(20px) saturate(1.4);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius-glass);
+}
+
+/* Variante légère (pour les items de liste) */
+.glass-card-sm {
+  background: rgba(255, 255, 255, 0.04);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 14px;
+  transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+.glass-card-sm:hover {
+  background: rgba(255, 255, 255, 0.07);
+  border-color: rgba(255, 255, 255, 0.14);
+}
+
+/* Navbar / Header glass */
+.glass-nav {
+  background: rgba(13, 17, 23, 0.72);
+  backdrop-filter: blur(24px) saturate(1.6);
+  -webkit-backdrop-filter: blur(24px) saturate(1.6);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+/* Sidebar glass */
+.glass-sidebar {
+  background: rgba(22, 27, 34, 0.5);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-right: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+/* Modal overlay */
+.glass-overlay {
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+
+/* Panel flottant (modale, drawer) */
+.glass-panel {
+  background: rgba(22, 27, 34, 0.85);
+  backdrop-filter: blur(32px) saturate(1.5);
+  -webkit-backdrop-filter: blur(32px) saturate(1.5);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 24px;
+}
+
+/* ───────────────────────────────────────────────────────────────────────────
+   BOUTONS
+─────────────────────────────────────────────────────────────────────────── */
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 24px;
+  border-radius: var(--radius-pill);
+  background: linear-gradient(135deg, var(--color-accent-emerald), var(--color-accent-green));
+  color: #0d1117;
+  font-weight: 700;
+  font-size: 0.8rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  cursor: pointer;
+  border: none;
+  transition: transform 0.15s ease, box-shadow 0.2s ease, opacity 0.15s ease;
+  box-shadow: 0 4px 20px rgba(16, 185, 129, 0.3);
+}
+
+.btn-primary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 28px rgba(16, 185, 129, 0.45);
+}
+
+.btn-primary:active {
+  transform: translateY(0) scale(0.97);
+}
+
+.btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 18px;
+  border-radius: var(--radius-pill);
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--color-text-secondary);
+  font-weight: 600;
+  font-size: 0.75rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  cursor: pointer;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  transition: all 0.15s ease;
+}
+
+.btn-ghost:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--color-text-primary);
+  border-color: rgba(255, 255, 255, 0.15);
+}
+
+.btn-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  flex-shrink: 0;
+}
+
+.btn-icon:hover {
+  background: rgba(255, 255, 255, 0.12);
+  color: var(--color-text-primary);
+  transform: scale(1.05);
+}
+
+.btn-danger {
+  background: rgba(248, 113, 113, 0.15);
+  border-color: rgba(248, 113, 113, 0.25);
+  color: var(--color-accent-red);
+}
+
+.btn-danger:hover {
+  background: rgba(248, 113, 113, 0.25);
+  border-color: rgba(248, 113, 113, 0.4);
+  color: #fca5a5;
+}
+
+/* ───────────────────────────────────────────────────────────────────────────
+   STORAGE TAB SELECTOR (Frigo / Placard / Congélateur)
+─────────────────────────────────────────────────────────────────────────── */
+.storage-tabs {
+  display: flex;
+  gap: 4px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 14px;
+  padding: 4px;
+}
+
+.storage-tab {
+  flex: 1;
+  padding: 8px 16px;
+  border-radius: 10px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  cursor: pointer;
+  border: none;
+  color: var(--color-text-muted);
+  background: transparent;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  white-space: nowrap;
+}
+
+.storage-tab.active {
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--color-text-primary);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.storage-tab.active.fridge  { color: var(--color-accent-blue); }
+.storage-tab.active.pantry  { color: var(--color-accent-amber); }
+.storage-tab.active.freezer { color: var(--color-accent-purple); }
+
+/* ───────────────────────────────────────────────────────────────────────────
+   BADGES & TAGS DE STATUT
+─────────────────────────────────────────────────────────────────────────── */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 10px;
+  border-radius: 99px;
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.badge-ok      { background: rgba(74, 222, 128, 0.15); color: var(--color-accent-green); }
+.badge-warning { background: rgba(251, 191, 36, 0.15); color: var(--color-accent-amber); }
+.badge-danger  { background: rgba(248, 113, 113, 0.15); color: var(--color-accent-red); }
+.badge-frozen  { background: rgba(167, 139, 250, 0.15); color: var(--color-accent-purple); }
+
+/* ───────────────────────────────────────────────────────────────────────────
+   FORMULAIRES
+─────────────────────────────────────────────────────────────────────────── */
+.input-glass {
+  width: 100%;
+  padding: 11px 16px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  border-radius: 12px;
+  color: var(--color-text-primary);
+  font-size: 0.875rem;
+  font-family: var(--font-display);
+  transition: border-color 0.2s ease, background 0.2s ease;
+  outline: none;
+}
+
+.input-glass::placeholder { color: var(--color-text-muted); }
+
+.input-glass:focus {
+  border-color: rgba(74, 222, 128, 0.5);
+  background: rgba(255, 255, 255, 0.08);
+  box-shadow: 0 0 0 3px rgba(74, 222, 128, 0.1);
+}
+
+.input-glass option {
+  background: #1e2530;
+  color: var(--color-text-primary);
+}
+
+.label-glass {
+  display: block;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+  margin-bottom: 6px;
+}
+
+/* ───────────────────────────────────────────────────────────────────────────
+   NOTIFICATION DOT ANIMÉ
+─────────────────────────────────────────────────────────────────────────── */
+.notification-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--color-accent-red);
+  animation: notifPulse 2s ease-in-out infinite;
+}
+
+@keyframes notifPulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%       { opacity: 0.7; transform: scale(1.25); }
+}
+
+/* ───────────────────────────────────────────────────────────────────────────
+   SCROLLBAR DANS LES PANNEAUX
+─────────────────────────────────────────────────────────────────────────── */
+.custom-scroll { scrollbar-width: thin; scrollbar-color: rgba(255,255,255,0.12) transparent; }
+.custom-scroll::-webkit-scrollbar { width: 4px; }
+.custom-scroll::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.12); border-radius: 99px; }
+
+/* ───────────────────────────────────────────────────────────────────────────
+   UTILITAIRES
+─────────────────────────────────────────────────────────────────────────── */
+.text-gradient-green {
+  background: linear-gradient(135deg, var(--color-accent-green), var(--color-accent-blue));
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.text-gradient-warm {
+  background: linear-gradient(135deg, var(--color-accent-amber), var(--color-accent-red));
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.divider {
+  height: 1px;
+  background: rgba(255, 255, 255, 0.07);
+  margin: 16px 0;
+}
+
+/* Shimmer loader */
+@keyframes shimmer {
+  0%   { background-position: -400px 0; }
+  100% { background-position: 400px 0; }
+}
+
+.skeleton {
+  background: linear-gradient(90deg, rgba(255,255,255,0.04) 25%, rgba(255,255,255,0.09) 50%, rgba(255,255,255,0.04) 75%);
+  background-size: 800px 100%;
+  animation: shimmer 1.6s infinite linear;
+  border-radius: 8px;
+}
